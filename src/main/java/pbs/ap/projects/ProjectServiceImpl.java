@@ -43,4 +43,19 @@ public class ProjectServiceImpl implements ProjectService{
     public boolean deleteProjectById(Long id){
         return Project.deleteById(id);
     }
+
+    @Transactional
+    public Project updateProjectById(Long id, Project project){
+        Optional<Project> entity = Project.findByIdOptional(id);
+        if (entity.isEmpty()){
+            return null;
+        }
+        Project dbProject = entity.get();
+        dbProject.projectName = project.projectName;
+        dbProject.projectDescription = project.projectDescription;
+        dbProject.taskList = project.taskList;
+        dbProject.projectMaintainers = project.projectMaintainers;
+        dbProject.persistAndFlush();
+        return dbProject;
+    }
 }

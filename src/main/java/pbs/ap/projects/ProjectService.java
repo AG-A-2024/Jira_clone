@@ -10,4 +10,5 @@ public interface ProjectService {
     Optional<Project> getProjectByProjectName(String projectName);
     boolean addProject(Project project);
     boolean deleteProjectById(Long id);
+    Project updateProjectById(Long id, Project project);
 }
