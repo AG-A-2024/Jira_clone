@@ -1,12 +1,13 @@
 package pbs.ap.projects;
 
-import jakarta.ws.rs.core.Response;
-
 import java.util.List;
+import java.util.Optional;
 
 public interface ProjectService {
     List<Project> getAllProjects();
     List<Project> getAllUserProjects();
-    Project getProjectById(Long id);
-    Project getProjectByProjectName(String projectName);
+    Optional<Project> getProjectById(Long id);
+    Optional<Project> getProjectByProjectName(String projectName);
+    boolean addProject(Project project);
+    boolean deleteProjectById(Long id);
 }

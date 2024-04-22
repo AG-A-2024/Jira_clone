@@ -1,11 +1,18 @@
 plugins {
     id 'java'
     id 'io.quarkus'
+    id 'idea'
 }
 
 repositories {
     mavenCentral()
     mavenLocal()
+}
+
+idea {
+    module {
+        downloadJavadoc = true
+    }
 }
 
 dependencies {
