@@ -105,4 +105,16 @@ public class ProjectController {
         return response;
     }
 
+    @PATCH
+    @Operation(operationId = "updateProjectById",
+            description = "Returns the result of a project update; project is provided by its id")
+    @Path("/{id}")
+    public Response updateProjectById(@PathParam("id") Long id, Project project){
+        Project dbProject = projectService.updateProjectById(id, project);
+        if (dbProject == null) {
+            throw new NotFoundException();
+        }
+        return Response.status(Response.Status.OK).entity("Project has been updated" + dbProject.toString()).build();
+    }
+
 }
