@@ -7,5 +7,7 @@ public interface UserService {
     Optional<User> getUserById(long id);
     Optional<User> getUserByEmail(String email);
     boolean createUser(User user);
+    boolean updateUser(long id, User user);
+
     boolean deleteUserById(long id);
 }

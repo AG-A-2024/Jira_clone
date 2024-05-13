@@ -3,16 +3,16 @@ package pbs.ap.users;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
+import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
 import org.jboss.logging.Logger;
-import pbs.ap.projects.Project;
-import pbs.ap.projects.ProjectServiceImpl;
+
 
 import java.util.List;
 import java.util.Optional;
 @ApplicationScoped
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
     private static final Logger LOG = Logger.getLogger(UserServiceImpl.class);
 
     @Override
@@ -32,13 +32,35 @@ public class UserServiceImpl implements UserService{
         LOG.debug(">>>getUserByEmail<<<");
         return User.find("email", email).firstResultOptional();
     }
+
     @Transactional
     @Override
     public boolean createUser(User user) {
         LOG.debug(">>>createUser<<<");
         User.persist(user);
+        User.flush();
         return user.isPersistent();
     }
+
+    @Transactional
+    @Override
+    public boolean updateUser(long id, User user) {
+        LOG.debug(">>>updateUser<<<");
+        Optional<User> u = getUserById(id);
+        if (u.isPresent()) {
+            try {
+                User oldUser = u.get();
+                oldUser.email = user.email;
+                oldUser.name = user.name;
+                oldUser.lastName = user.lastName;
+                return createUser(oldUser);
+            } catch (Exception e) {
+                LOG.error(">>>updateUser<<< ERROR: ", e);
+            }
+        }
+        return false;
+    }
+
     @Transactional
     @Override
     public boolean deleteUserById(long id){

@@ -1,5 +1,6 @@
 package pbs.ap.users;
 
+import io.smallrye.jwt.build.JwtEncryption;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.*;
@@ -65,11 +66,16 @@ public class UserController {
         }
     }
     @PUT
+    @Path("/{id}")
     @Operation(operationId = "updateUser",
             description = "updates user")
-    public Response updateUser(@RequestBody User user){
-       // TODO
-        return Response.status(Response.Status.NOT_IMPLEMENTED).build();
+    public Response updateUser(@PathParam("id") long id, @RequestBody User userWithNewData){
+         return userService.updateUser(id, userWithNewData) ?
+         Response.status(Response.Status.CREATED).build() :
+         Response.status(Response.Status.BAD_REQUEST).build();
+
+
+   //     return Response.status(Response.Status.NOT_IMPLEMENTED).build();
     }
     @DELETE
     @Path("/{id}")
