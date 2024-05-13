@@ -1,11 +1,14 @@
 package pbs.ap.users;
 
+import io.quarkus.elytron.security.common.BcryptUtil;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import io.quarkus.security.credential.PasswordCredential;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
 import org.jboss.logging.Logger;
+//import io.quarkus.elytron.security.common.BcryptUtil;
 
 
 import java.util.List;
@@ -37,8 +40,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean createUser(User user) {
         LOG.debug(">>>createUser<<<");
-        User.persist(user);
-        User.flush();
+        String encryptedPassword = BcryptUtil.bcryptHash(user.password);
+        user.setPassword(encryptedPassword);
+        user.persistAndFlush();
+
         return user.isPersistent();
     }
 
