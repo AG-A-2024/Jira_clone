@@ -1,6 +1,7 @@
 package pbs.ap.tasks;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -17,8 +18,11 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 
-public class Task extends PanacheEntity {
+public class Task extends PanacheEntityBase {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    public Long id;
     @NotNull
     public String taskName;
     public int sequence;
