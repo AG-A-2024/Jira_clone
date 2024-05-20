@@ -1,6 +1,5 @@
 package pbs.ap.tasks;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
@@ -11,7 +10,6 @@ import org.jboss.logging.Logger;
 
 
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Supplier;
 
 @ApplicationScoped

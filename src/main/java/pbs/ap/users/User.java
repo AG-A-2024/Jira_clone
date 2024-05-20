@@ -1,10 +1,10 @@
 package pbs.ap.users;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
-import pbs.ap.projects.Project;
+
 
 import java.util.Set;
 
@@ -12,14 +12,17 @@ import java.util.Set;
 public class User extends PanacheEntity {
     public String name;
     public String lastName;
-    public Roles role;
+
     public String indexNr;
     @Email
     public String email;
-    public long phoneNumber;
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "user_roles", joinColumns =
+    @JoinColumn(name = "id"))
+    public Set<String> roles;
+
     String password;
-    //@ManyToMany(mappedBy = "studenci")
-    //public Set<Project> projects;
+    @JsonProperty("password")
     public void setPassword(String password) {
         this.password = password;
     }

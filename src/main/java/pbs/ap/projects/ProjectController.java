@@ -1,9 +1,12 @@
 package pbs.ap.projects;
 
+import io.quarkus.security.identity.SecurityIdentity;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.SecurityContext;
 import lombok.RequiredArgsConstructor;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
@@ -20,6 +23,7 @@ import java.util.Optional;
 public class ProjectController {
 
     private final ProjectService projectService;
+    private final SecurityIdentity securityIdentity;
 
     @GET
     @RolesAllowed("ADMIN")
@@ -38,7 +42,8 @@ public class ProjectController {
             @APIResponse(responseCode = "401", description = "Unauthorized; you need to be logged in")
     })
     public Response getUserProjects(){
-        return Response.status(Response.Status.OK).entity(projectService.getAllUserProjects()).build();
+        String username = securityIdentity.getPrincipal().getName();
+        return Response.status(Response.Status.OK).entity(projectService.getAllUserProjects(username)).build();
     }
 
     @GET
