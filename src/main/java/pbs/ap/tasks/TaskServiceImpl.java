@@ -1,6 +1,5 @@
 package pbs.ap.tasks;
 
-import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
@@ -8,9 +7,8 @@ import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.jboss.logging.Logger;
 
-
 import java.util.List;
-import java.util.function.Supplier;
+import java.util.Optional;
 
 @ApplicationScoped
 @RequiredArgsConstructor
@@ -28,6 +26,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public Task getTaskById(Long id) {
+
         return Task.findById(id);
     }
 
@@ -37,40 +36,30 @@ public class TaskServiceImpl implements TaskService {
     }
 
 
-  /*  @Override
-    @Transactional
-    public Uni<Task> addTask(Task task) {
-        return Uni.createFrom().item(() -> {
-            entityManager.persist(task);
-            return task;
-        });
-    } */
-
     @Override
     @Transactional
-    public Uni<Task> addTask(Task task) {
-        return Uni.createFrom().item((Supplier<Task>) () -> {
-            // Użycie merge() do zapisania lub aktualizacji zadania w bazie danych
-            Task savedTask = entityManager.merge(task);
-            LOG.debugf("Added or updated task with id %d", savedTask.id);
-            return savedTask;
-        });
+    public Task addTask(Task task) {
+        Task savedTask = entityManager.merge(task);
+        LOG.debugf("Added or updated task with id %d", savedTask.id);
+        return savedTask;
     }
 
     @Override
     @Transactional
-    public Task update(Task task) {
-        Task existingTask = Task.findById(task.id);
+    public Task update(Long id, Task taskToUpdate) {
+        Task existingTask = Task.findById(id);
         if (existingTask == null) {
-            throw new NotFoundException("Task with id " + task.id + " not found");
+            throw new NotFoundException("Task with id " + id + " not found");
         }
-        existingTask.setTaskName(task.getTaskName());
-        existingTask.setSequence(task.getSequence());
-        existingTask.setDescription(task.getDescription());
-        existingTask.setDeliveryTime(task.getDeliveryTime());
+        
+        existingTask.setTaskName(taskToUpdate.getTaskName());
+        existingTask.setSequence(taskToUpdate.getSequence());
+        existingTask.setDescription(taskToUpdate.getDescription());
+        existingTask.setDeliveryTime(taskToUpdate.getDeliveryTime());
 
         return existingTask;
     }
+
 
     @Override
     @Transactional
@@ -83,6 +72,14 @@ public class TaskServiceImpl implements TaskService {
     }
 
 
+    @Override
+    public Optional<Task> findTaskById(Long id) {
+        return Optional.ofNullable(Task.findById(id));
+    }
+
 
 }
+
+
+
 
