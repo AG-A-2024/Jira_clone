@@ -17,7 +17,7 @@ import java.util.Optional;
 @ApplicationScoped
 @Path("/user")
 @Produces({"application/json","application/problem+json"})
-//@RolesAllowed({"ADMIN", "USER"})
+@RolesAllowed({"ADMIN", "USER"})
 @RequiredArgsConstructor
 public class UserController {
 
@@ -28,7 +28,7 @@ public class UserController {
     @Operation(operationId = "getAllUsers",
             description = "returns all the users from the database")
     @Path("/all")
-  //  @RolesAllowed("ADMIN")
+    @RolesAllowed("ADMIN")
     public Response getAllUsers(){
         return !userService.getAllUsers().isEmpty() ?
                 Response.status(Response.Status.OK).entity(userService.getAllUsers()).build() :

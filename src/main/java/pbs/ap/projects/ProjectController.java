@@ -4,9 +4,7 @@ import io.quarkus.security.identity.SecurityIdentity;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.*;
-import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.SecurityContext;
 import lombok.RequiredArgsConstructor;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
@@ -18,7 +16,7 @@ import java.util.Optional;
 @ApplicationScoped
 @Path("/projects")
 @Produces({"application/json","application/problem+json"})
-//@RolesAllowed({"ADMIN", "USER"})
+@RolesAllowed({"ADMIN", "USER"})
 @RequiredArgsConstructor
 public class ProjectController {
 
@@ -48,7 +46,7 @@ public class ProjectController {
 
     @GET
     @Path("/{Id}/")
-//    @RolesAllowed("ADMIN")
+    @RolesAllowed("ADMIN")
     @Operation(operationId = "getProjectById",
                 description = "Returns a single project with a provided id")
     @APIResponses(value = {
