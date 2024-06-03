@@ -30,6 +30,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public Task getTaskById(Long id) {
+
         return Task.findById(id);
     }
 
@@ -51,12 +52,23 @@ public class TaskServiceImpl implements TaskService {
     @Override
     @Transactional
     public Uni<Task> addTask(Task task) {
-        return Uni.createFrom().item((Supplier<Task>) () -> {
-            // Użycie merge() do zapisania lub aktualizacji zadania w bazie danych
-            Task savedTask = entityManager.merge(task);
-            LOG.debugf("Added or updated task with id %d", savedTask.id);
-            return savedTask;
+        return Uni.createFrom().item(() -> {
+            if (isTaskValid(task)) {
+                Task savedTask = entityManager.merge(task);
+                LOG.debugf("Added or updated task with id %d", savedTask.id);
+                return savedTask;
+            } else {
+                throw new IllegalArgumentException("Cannot add task: all fields must be filled");
+            }
         });
+    }
+
+    private boolean isTaskValid(Task task) {
+        return task != null &&
+                task.getTaskName() != null && !task.getTaskName().isEmpty() &&
+                task.getSequence() != 0 &&
+                task.getDescription() != null && !task.getDescription().isEmpty() &&
+                task.getDeliveryTime() != null;
     }
 
     @Override
@@ -84,6 +96,10 @@ public class TaskServiceImpl implements TaskService {
         return taskToDelete;
     }
 
+    @Override
+    public Optional<Task> findTaskById(Long id) {
+        return Optional.ofNullable(Task.findById(id));
+    }
 
 
 }

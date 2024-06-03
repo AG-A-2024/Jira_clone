@@ -1,16 +1,12 @@
 package pbs.ap.tasks;
 
-import io.smallrye.mutiny.Uni;
-import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
 import org.eclipse.microprofile.openapi.annotations.Operation;
-import org.springframework.web.bind.annotation.RequestBody;
 
-import static io.quarkus.arc.ComponentsProvider.LOG;
+import java.util.Optional;
 
 @ApplicationScoped
 @Path("/tasks")
@@ -34,13 +30,16 @@ public class TaskController {
     @Path("/{id}")
     @Operation(operationId = "getTaskById",
             description = "returns one task from database")
-    public Response getTaskById(@PathParam("id") Long id){
-
-        if(id == null){
+    public Response getTaskById(@PathParam("id") Long id) {
+        if (id == null) {
             return Response.status(Response.Status.BAD_REQUEST).build();
-        }
-        else{
-            return Response.status(Response.Status.OK).entity(taskService.getTaskById(id)).build();
+        } else {
+            Optional<Task> taskOpt = taskService.findTaskById(id);
+            if (taskOpt.isPresent()) {
+                return Response.status(Response.Status.OK).entity(taskOpt.get()).build();
+            } else {
+                return Response.status(Response.Status.NOT_FOUND).build();
+            }
         }
     }
 
@@ -57,7 +56,25 @@ public class TaskController {
     }
 
 
-
+    @POST
+    public Response addTask(Task task) {
+        try {
+            Task addedTask = taskService.addTask(task)
+                    .await().indefinitely();
+            return Response.status(Response.Status.CREATED)
+                    .entity(addedTask)
+                    .build();
+        } catch (IllegalArgumentException e) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(e.getMessage())
+                    .build();
+        } catch (Exception e) {
+            // Obsługa innych błędów
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("Internal server error")
+                    .build();
+        }
+    }
 
   /*  @POST
     public Uni<Task> addTask(Task task) {
@@ -66,14 +83,7 @@ public class TaskController {
                 .onFailure().invoke(throwable -> LOG.error("Failed to add task: " + throwable.getMessage()));
     }*/
 
-    @POST
-    public Response addTask(Task task) {
-        Task addedTask = taskService.addTask(task)
-                .await().indefinitely();
-        return Response.status(Response.Status.CREATED)
-                .entity(addedTask)
-                .build();
-    }
+
 
     @PUT
     @Path("/{id}")
