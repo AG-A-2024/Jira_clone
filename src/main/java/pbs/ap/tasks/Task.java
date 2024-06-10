@@ -22,10 +22,12 @@ public class Task extends PanacheEntityBase {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @NotNull
     public Long id;
     @NotNull
     public String taskName;
     public int sequence;
+    @NotNull
     public String description;
     @NotNull
     LocalDateTime deliveryTime;
