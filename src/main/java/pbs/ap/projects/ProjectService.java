@@ -5,9 +5,10 @@ import java.util.Optional;
 
 public interface ProjectService {
     List<Project> getAllProjects();
-    List<Project> getAllUserProjects();
+    List<Project> getAllUserProjects(String username);
     Optional<Project> getProjectById(Long id);
     Optional<Project> getProjectByProjectName(String projectName);
     boolean addProject(Project project);
     boolean deleteProjectById(Long id);
+    Project updateProjectById(Long id, Project project);
 }

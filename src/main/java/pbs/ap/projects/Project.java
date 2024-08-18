@@ -1,10 +1,7 @@
 package pbs.ap.projects;
 
-import io.quarkus.hibernate.orm.panache.PanacheEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToMany;
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -17,7 +14,11 @@ import java.util.List;
 @Entity
 @Data
 @NoArgsConstructor
-public class Project extends PanacheEntity {
+public class Project extends PanacheEntityBase {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    public Long id;
     @Column(nullable = false, length = 50)
     public String projectName;
     @Column(nullable = false, length = 1000)

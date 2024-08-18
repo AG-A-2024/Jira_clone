@@ -15,7 +15,7 @@ import static io.quarkus.arc.ComponentsProvider.LOG;
 @ApplicationScoped
 @Path("/tasks")
 @Produces({"application/json","application/problem+json"})
-//@RolesAllowed({"ADMIN", "USER"})
+@RolesAllowed({"ADMIN", "USER"})
 @RequiredArgsConstructor
 public class TaskController {
 

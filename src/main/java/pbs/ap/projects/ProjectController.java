@@ -1,5 +1,6 @@
 package pbs.ap.projects;
 
+import io.quarkus.security.identity.SecurityIdentity;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.*;
@@ -15,11 +16,12 @@ import java.util.Optional;
 @ApplicationScoped
 @Path("/projects")
 @Produces({"application/json","application/problem+json"})
-//@RolesAllowed({"ADMIN", "USER"})
+@RolesAllowed({"ADMIN", "USER"})
 @RequiredArgsConstructor
 public class ProjectController {
 
     private final ProjectService projectService;
+    private final SecurityIdentity securityIdentity;
 
     @GET
     @RolesAllowed("ADMIN")
@@ -38,12 +40,13 @@ public class ProjectController {
             @APIResponse(responseCode = "401", description = "Unauthorized; you need to be logged in")
     })
     public Response getUserProjects(){
-        return Response.status(Response.Status.OK).entity(projectService.getAllUserProjects()).build();
+        String username = securityIdentity.getPrincipal().getName();
+        return Response.status(Response.Status.OK).entity(projectService.getAllUserProjects(username)).build();
     }
 
     @GET
     @Path("/{Id}/")
-//    @RolesAllowed("ADMIN")
+    @RolesAllowed("ADMIN")
     @Operation(operationId = "getProjectById",
                 description = "Returns a single project with a provided id")
     @APIResponses(value = {
@@ -103,6 +106,18 @@ public class ProjectController {
             response = Response.status(Response.Status.NOT_FOUND).entity(String.format("Project with id %s didn't exist", id)).build();
         }
         return response;
+    }
+
+    @PATCH
+    @Operation(operationId = "updateProjectById",
+            description = "Returns the result of a project update; project is provided by its id")
+    @Path("/{id}")
+    public Response updateProjectById(@PathParam("id") Long id, Project project){
+        Project dbProject = projectService.updateProjectById(id, project);
+        if (dbProject == null) {
+            throw new NotFoundException();
+        }
+        return Response.status(Response.Status.OK).entity("Project has been updated" + dbProject.toString()).build();
     }
 
 }
