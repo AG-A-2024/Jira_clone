@@ -71,7 +71,7 @@ public class UserController {
             description = "updates user")
     public Response updateUser(@PathParam("id") long id, @RequestBody User userWithNewData){
          return userService.updateUser(id, userWithNewData) ?
-         Response.status(Response.Status.CREATED).build() :
+         Response.status(Response.Status.OK).build() :
          Response.status(Response.Status.BAD_REQUEST).build();
 
 
