@@ -29,6 +29,4 @@ public class Task extends PanacheEntityBase {
     public String description;
     @NotNull
     LocalDateTime deliveryTime;
-
-
 }

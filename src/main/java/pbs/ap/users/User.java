@@ -25,7 +25,8 @@ public class User extends PanacheEntity {
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "user_roles", joinColumns =
     @JoinColumn(name = "id"))
-    public Set<String> roles;
+    @Enumerated(EnumType.STRING)
+    public Set<Roles> roles;
 
     String password;
     @JsonProperty("password")

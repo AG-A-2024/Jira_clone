@@ -40,12 +40,12 @@ public class AuthController {
         try {
             boolean isRegistered = authService.register(registerRequest);
             if (isRegistered) {
-                return Response.status(Response.Status.CREATED).build(); // HTTP 201
+                return Response.status(Response.Status.CREATED).build();
             } else {
-                return Response.status(Response.Status.BAD_REQUEST).entity("Registration failed").build(); // HTTP 400
+                return Response.status(Response.Status.BAD_REQUEST).entity("Registration failed").build();
             }
         } catch (Exception e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("An error occurred").build(); // HTTP 500
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("An error occurred").build();
         }
     }
 }

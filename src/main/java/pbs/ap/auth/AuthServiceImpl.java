@@ -6,12 +6,14 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.CreationException;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.logging.Logger;
+import pbs.ap.users.Roles;
 import pbs.ap.users.User;
 import pbs.ap.users.UserService;
 
 import java.time.Duration;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class AuthServiceImpl implements AuthService {
@@ -32,9 +34,10 @@ public class AuthServiceImpl implements AuthService {
         if (user.isEmpty() || UserService.matches(user.get(), authRequest.password())) {
             throw new AuthenticationFailedException("Invalid credentials");
         }
+        Set<String> roles = user.get().roles.stream().map(Enum::name).collect(Collectors.toUnmodifiableSet());
         return Jwt.issuer(issuer)
                 .upn(authRequest.username())
-                .groups(user.get().roles)
+                .groups(roles)
                 .expiresIn(Duration.ofHours(5L))
                 .sign(); //TODO osobna tabela z kluczami do podpisywania; klucz per user
     }
@@ -52,7 +55,7 @@ public class AuthServiceImpl implements AuthService {
         newUser.name = registerRequest.firstName();
         newUser.lastName = registerRequest.lastName();
         newUser.setPassword(registerRequest.password());
-        newUser.roles = Set.of("USER");
+        newUser.roles = Set.of(Roles.USER);
         return userService.createUser(newUser);
     }
 }
