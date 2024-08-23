@@ -40,7 +40,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean createUser(User user) {
         LOG.debug(">>>createUser<<<");
-        String encryptedPassword = BcryptUtil.bcryptHash(user.getPassword());
+        String encryptedPassword = BcryptUtil.bcryptHash(user.password);
         user.setPassword(encryptedPassword);
         user.persistAndFlush();
 
@@ -55,7 +55,6 @@ public class UserServiceImpl implements UserService {
 
         if (u.isPresent()) {
             try {
-
                 User oldUser = u.get();
                 oldUser.email = user.email;
                 oldUser.name = user.name;

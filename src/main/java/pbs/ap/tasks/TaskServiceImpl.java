@@ -10,6 +10,7 @@ import org.jboss.logging.Logger;
 
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 @ApplicationScoped
@@ -48,26 +49,21 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     @Transactional
-    public Uni<Task> addTask(Task task) {
-        return Uni.createFrom().item((Supplier<Task>) () -> {
-            // Użycie merge() do zapisania lub aktualizacji zadania w bazie danych
-            Task savedTask = entityManager.merge(task);
-            LOG.debugf("Added or updated task with id %d", savedTask.id);
-            return savedTask;
-        });
+    public boolean addTask(Task task) {
+        task.persistAndFlush();
+        return task.isPersistent();
     }
 
     @Override
     @Transactional
     public Task update(Task task) {
-        Task existingTask = Task.findById(task.id);
-        if (existingTask == null) {
+        Optional<Task> existingTaskOpt = Task.findByIdOptional(task.id);
+        if (existingTaskOpt.isEmpty()) {
             throw new NotFoundException("Task with id " + task.id + " not found");
         }
-        existingTask.setTaskName(task.getTaskName());
-        existingTask.setSequence(task.getSequence());
-        existingTask.setDescription(task.getDescription());
-        existingTask.setDeliveryTime(task.getDeliveryTime());
+        Task existingTask = existingTaskOpt.get();
+        existingTask.taskName = task.taskName;
+        existingTask.description = task.description;
 
         return existingTask;
     }

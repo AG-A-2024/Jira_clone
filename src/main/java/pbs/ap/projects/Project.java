@@ -1,8 +1,10 @@
 package pbs.ap.projects;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
-import lombok.Data;
+import jakarta.validation.constraints.NotNull;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import pbs.ap.tasks.Task;
@@ -12,7 +14,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Data
 @NoArgsConstructor
 public class Project extends PanacheEntityBase {
 
@@ -23,6 +24,10 @@ public class Project extends PanacheEntityBase {
     public String projectName;
     @Column(nullable = false, length = 1000)
     public String projectDescription;
+
+    @ManyToOne(optional = false)
+    @JsonBackReference
+    public User projectOwner;
     @ManyToMany
     public List<User> projectMaintainers;
     @CreationTimestamp
@@ -30,7 +35,8 @@ public class Project extends PanacheEntityBase {
     public LocalDateTime creationTime;
 
     public LocalDateTime releaseDate;
-    @OneToMany
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
     public List<Task> taskList;
 
     public Project(String projectName, String projectDescription){

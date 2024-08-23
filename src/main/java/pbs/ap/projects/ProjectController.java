@@ -32,7 +32,6 @@ public class ProjectController {
     }
 
     @GET
-    @RolesAllowed({"ADMIN","USER"})
     @Path("/user/")
     @Operation(operationId = "getUserProjects",
                 description = "Returns all projects connected to the logged in user")
@@ -67,7 +66,7 @@ public class ProjectController {
     @Operation(operationId = "getProjectByName",
             description = "Returns a project by a given name")
     @Path("/byName/{name}")
-    public Response getProjectByName(@QueryParam("name") String name){
+    public Response getProjectByName(@PathParam("name") String name){
         Optional<Project> project = projectService.getProjectByProjectName(name);
         Response response;
         if (project.isPresent()) {

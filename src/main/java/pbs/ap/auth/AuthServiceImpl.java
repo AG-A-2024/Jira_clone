@@ -4,6 +4,7 @@ import io.quarkus.security.AuthenticationFailedException;
 import io.smallrye.jwt.build.Jwt;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.CreationException;
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.jboss.logging.Logger;
 import pbs.ap.users.Roles;
@@ -31,7 +32,7 @@ public class AuthServiceImpl implements AuthService {
     public String authenticate(AuthRequest authRequest) {
         LOG.debug(">>>authenticate; Mail: " + authRequest.username());
         Optional<User> user = User.find("email", authRequest.username()).firstResultOptional();
-        if (user.isEmpty() || UserService.matches(user.get(), authRequest.password())) {
+        if (user.isEmpty() || !UserService.matches(user.get(), authRequest.password())) {
             throw new AuthenticationFailedException("Invalid credentials");
         }
         Set<String> roles = user.get().roles.stream().map(Enum::name).collect(Collectors.toUnmodifiableSet());
@@ -51,7 +52,9 @@ public class AuthServiceImpl implements AuthService {
         }
         User newUser = new User();
         newUser.email = registerRequest.username();
-        newUser.indexNr = registerRequest.index();
+        if (StringUtils.isNotBlank(registerRequest.index())){
+            newUser.indexNr = registerRequest.index();
+        }
         newUser.name = registerRequest.firstName();
         newUser.lastName = registerRequest.lastName();
         newUser.setPassword(registerRequest.password());

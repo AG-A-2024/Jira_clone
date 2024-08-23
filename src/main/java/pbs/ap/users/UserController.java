@@ -15,7 +15,7 @@ import pbs.ap.projects.ProjectService;
 import java.util.Optional;
 
 @ApplicationScoped
-@Path("/user")
+@Path("/users")
 @Produces({"application/json","application/problem+json"})
 @RolesAllowed({"ADMIN", "USER"})
 @RequiredArgsConstructor

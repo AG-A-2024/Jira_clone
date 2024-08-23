@@ -1,12 +1,12 @@
 package pbs.ap.users;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.quarkus.hibernate.orm.panache.PanacheEntity;
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
-import lombok.Getter;
+import jakarta.validation.constraints.NotBlank;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import pbs.ap.projects.Project;
 
 
@@ -14,13 +14,25 @@ import java.util.Set;
 
 @Entity
 @NoArgsConstructor
-public class User extends PanacheEntity {
+public class User extends PanacheEntityBase {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    public Long id;
+
+    @NotBlank
     public String name;
+    @NotBlank
     public String lastName;
 
     public String indexNr;
-    @Email
+    @Email(regexp = "^(.+)@(pbs\\.edu\\.pl)$")
+    @NotBlank
+    @Column(unique = true)
     public String email;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "projectOwner")
+    @JsonManagedReference
+    public Set<Project> ownedProjects;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "user_roles", joinColumns =

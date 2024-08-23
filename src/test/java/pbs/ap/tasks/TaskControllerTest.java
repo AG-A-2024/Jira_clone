@@ -19,7 +19,7 @@ public class TaskControllerTest {
     public void testCreateTaskSuccess() {
         Task newTask = new Task();
         newTask.taskName = "Test";
-        newTask.deliveryTime = LocalDateTime.now();
+        newTask.creationDateTime = LocalDateTime.now();
         newTask.description = "TestDescription";
         given()
                 .contentType("application/json")

@@ -20,9 +20,9 @@ public class ProjectServiceImpl implements ProjectService{
         return Project.listAll();
     }
 
-    public List<Project> getAllUserProjects(String username) {
-        LOG.debug(">>>getAllUserProjects; Username: " + username);
-        return Project.list("User.email", username);
+    public List<Project> getAllUserProjects(String email) {
+        LOG.debug(">>>getAllUserProjects; Username: " + email);
+        return Project.list("projectOwner.email", email);
     }
 
     public Optional<Project> getProjectById(Long id) {

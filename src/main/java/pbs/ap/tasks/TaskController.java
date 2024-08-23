@@ -23,14 +23,16 @@ public class TaskController {
     private final TaskServiceImpl taskServiceImpl;
 
     @GET
+    @RolesAllowed("ADMIN")
     @Operation(operationId = "getAllTasks",
             description = "returns all the tasks from the database")
 //    @APIResponse(responseCode = "401", )
-    public Response getAllTasks(){ //TODO obsługa 401
+    public Response getAllTasks(){
         return Response.status(Response.Status.OK).entity(taskService.getAllTasks()).build();
     }
 
     @GET
+    @RolesAllowed("ADMIN")
     @Path("/{id}")
     @Operation(operationId = "getTaskById",
             description = "returns one task from database")
@@ -44,34 +46,14 @@ public class TaskController {
         }
     }
 
-    @GET
-    @Path("/taskname/{taskName}")
-    @Operation(operationId = "getTaskByTaskName",
-            description = "returns a task by its name")
-    public Response getTaskByTaskName(@PathParam("taskName") String taskName) {
-        Task task = taskService.getTaskByTaskName(taskName);
-        if (task == null) {
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
-        return Response.status(Response.Status.OK).entity(task).build();
-    }
-
-
-
-
-  /*  @POST
-    public Uni<Task> addTask(Task task) {
-        return taskService.addTask(task)
-                .onItem().invoke(() -> LOG.info("Task added: " + task.id))
-                .onFailure().invoke(throwable -> LOG.error("Failed to add task: " + throwable.getMessage()));
-    }*/
-
     @POST
     public Response addTask(Task task) {
-        Task addedTask = taskService.addTask(task)
-                .await().indefinitely();
-        return Response.status(Response.Status.CREATED)
-                .entity(addedTask)
+        boolean isTaskAdded = taskService.addTask(task);
+        if (isTaskAdded) {
+            return Response.status(Response.Status.CREATED).entity(task).build();
+        }
+        return Response.status(Response.Status.BAD_REQUEST)
+                .entity("Task couldn't be created. Task content: " + task)
                 .build();
     }
 
@@ -79,20 +61,11 @@ public class TaskController {
     @Path("/{id}")
     @Operation(operationId = "updateTask",
             description = "updates an existing task")
-    public Response updateTask(@PathParam("id") Long id, Task taskToUpdate) {
-        if (taskToUpdate == null) {
+    public Response updateTask(@PathParam("id") Long id, Task task) {
+        if (task == null) {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
-        Task existingTask = taskService.getTaskById(id);
-        if (existingTask == null) {
-            return Response.status(Response.Status.NOT_FOUND).build();
-        }
-        existingTask.setTaskName(taskToUpdate.getTaskName());
-        existingTask.setSequence(taskToUpdate.getSequence());
-        existingTask.setDescription(taskToUpdate.getDescription());
-        existingTask.setDeliveryTime(taskToUpdate.getDeliveryTime());
-
-        Task updatedTask = taskService.update(existingTask);
+        Task updatedTask = taskService.update(task);
         return Response.status(Response.Status.OK).entity(updatedTask).build();
     }
 
