@@ -54,7 +54,7 @@ public class AuthServiceImpl implements AuthService {
         newUser.indexNr = registerRequest.index();
         newUser.name = registerRequest.firstName();
         newUser.lastName = registerRequest.lastName();
-        newUser.setPassword(registerRequest.password());
+        newUser.password = registerRequest.password();
         newUser.roles = Set.of(Roles.USER);
         return userService.createUser(newUser);
     }

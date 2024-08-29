@@ -19,7 +19,7 @@ public class UserControllerTest {
         newUser.email = "jan@test";
         newUser.name = "Jan";
         newUser.lastName = "Malinowski";
-        newUser.setPassword("123");
+        newUser.password ="123";
         given()
                 .contentType("application/json")
                 .body(newUser)
@@ -45,7 +45,7 @@ public class UserControllerTest {
         newUser.email = "jan@test";
         newUser.name = "Jan";
         newUser.lastName = "Malinowski";
-        newUser.setPassword("123");
+        newUser.password = "123";
         given()
                 .contentType("application/json")
                 .body(newUser)

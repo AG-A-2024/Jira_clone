@@ -27,10 +27,14 @@ public class User extends PanacheEntity {
     @JoinColumn(name = "id"))
     @Enumerated(EnumType.STRING)
     public Set<Roles> roles;
-
-    String password;
     @JsonProperty("password")
-    public void setPassword(String password) {
+    public String password;
+   /* @JsonProperty("password")
+      public void setPassword(String password) {
         this.password = password;
     }
+    public void getPassword() {
+        return this.password;
+    }*/
+
 }
