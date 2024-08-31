@@ -1,5 +1,6 @@
 package pbs.ap.users;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
@@ -7,6 +8,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.NoArgsConstructor;
+import pbs.ap.messages.Message;
 import pbs.ap.projects.Project;
 
 
@@ -33,6 +35,11 @@ public class User extends PanacheEntityBase {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "projectOwner")
     @JsonManagedReference
     public Set<Project> ownedProjects;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "sender")
+    @JsonManagedReference
+    @JsonIgnore
+    public Set<Message> messages;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "user_roles", joinColumns =
