@@ -4,6 +4,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.jboss.logging.Logger;
+import pbs.ap.users.UserService;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,13 +14,15 @@ import java.util.Optional;
 public class ProjectServiceImpl implements ProjectService{
 
     private static final Logger LOG = Logger.getLogger(ProjectServiceImpl.class);
+    private final UserService userService;
     public List<Project> getAllProjects() {
         LOG.debug(">>>getAllProjects<<<");
         return Project.listAll();
     }
 
-    public List<Project> getAllUserProjects() {
-        return null;
+    public List<Project> getAllUserProjects(String email) {
+        LOG.debug(">>>getAllUserProjects; Username: " + email);
+        return Project.list("projectOwner.email", email);
     }
 
     public Optional<Project> getProjectById(Long id) {

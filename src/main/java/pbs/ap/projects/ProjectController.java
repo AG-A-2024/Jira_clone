@@ -1,5 +1,6 @@
 package pbs.ap.projects;
 
+import io.quarkus.security.identity.SecurityIdentity;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.ws.rs.*;
@@ -15,11 +16,12 @@ import java.util.Optional;
 @ApplicationScoped
 @Path("/projects")
 @Produces({"application/json","application/problem+json"})
-//@RolesAllowed({"ADMIN", "USER"})
+@RolesAllowed({"ADMIN", "USER"})
 @RequiredArgsConstructor
 public class ProjectController {
 
     private final ProjectService projectService;
+    private final SecurityIdentity securityIdentity;
 
     @GET
     @RolesAllowed("ADMIN")
@@ -30,7 +32,6 @@ public class ProjectController {
     }
 
     @GET
-    @RolesAllowed({"ADMIN","USER"})
     @Path("/user/")
     @Operation(operationId = "getUserProjects",
                 description = "Returns all projects connected to the logged in user")
@@ -38,12 +39,13 @@ public class ProjectController {
             @APIResponse(responseCode = "401", description = "Unauthorized; you need to be logged in")
     })
     public Response getUserProjects(){
-        return Response.status(Response.Status.OK).entity(projectService.getAllUserProjects()).build();
+        String username = securityIdentity.getPrincipal().getName();
+        return Response.status(Response.Status.OK).entity(projectService.getAllUserProjects(username)).build();
     }
 
     @GET
     @Path("/{Id}/")
-//    @RolesAllowed("ADMIN")
+    @RolesAllowed("ADMIN")
     @Operation(operationId = "getProjectById",
                 description = "Returns a single project with a provided id")
     @APIResponses(value = {
@@ -64,7 +66,7 @@ public class ProjectController {
     @Operation(operationId = "getProjectByName",
             description = "Returns a project by a given name")
     @Path("/byName/{name}")
-    public Response getProjectByName(@QueryParam("name") String name){
+    public Response getProjectByName(@PathParam("name") String name){
         Optional<Project> project = projectService.getProjectByProjectName(name);
         Response response;
         if (project.isPresent()) {
