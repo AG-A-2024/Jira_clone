@@ -37,6 +37,9 @@ dependencies {
     implementation 'io.quarkus:quarkus-hibernate-orm'
     implementation 'io.quarkus:quarkus-elytron-security'
     implementation 'org.apache.commons:commons-lang3:3.0'
+  //  implementation 'io.quarkus:quarkus-websockets-next:3.14.1'
+    implementation "io.quarkus:quarkus-websockets"
+
     compileOnly 'org.projectlombok:lombok:1.18.32'
     annotationProcessor 'org.projectlombok:lombok:1.18.32'
     testImplementation 'io.quarkus:quarkus-junit5'
