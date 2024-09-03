@@ -25,7 +25,7 @@ public class Project extends PanacheEntityBase {
     @Column(nullable = false, length = 1000)
     public String projectDescription;
 
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = true)
     @JsonBackReference
     public User projectOwner;
     @ManyToMany

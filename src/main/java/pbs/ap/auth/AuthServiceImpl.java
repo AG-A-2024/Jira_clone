@@ -40,7 +40,7 @@ public class AuthServiceImpl implements AuthService {
                 .upn(authRequest.username())
                 .groups(roles)
                 .expiresIn(Duration.ofHours(5L))
-                .sign(); //TODO osobna tabela z kluczami do podpisywania; klucz per user
+                .sign();
     }
 
     @Override

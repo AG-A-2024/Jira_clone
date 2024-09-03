@@ -1,8 +1,10 @@
 package pbs.ap.tasks;
 
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.security.TestSecurity;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import pbs.ap.projects.Project;
 
 import java.time.LocalDateTime;
 
@@ -16,11 +18,15 @@ import static org.hamcrest.core.AnyOf.anyOf;
 public class TaskControllerTest {
 
     @Test
+    @TestSecurity(user = "admin@test.pl", roles = "ADMIN")
     public void testCreateTaskSuccess() {
         Task newTask = new Task();
         newTask.taskName = "Test";
         newTask.creationDateTime = LocalDateTime.now();
         newTask.description = "TestDescription";
+        Project p = new Project();
+        p.id = 1L;
+        newTask.project = p;
         given()
                 .contentType("application/json")
                 .body(newTask)
@@ -28,8 +34,8 @@ public class TaskControllerTest {
                 .then()
                 .statusCode(201);
     }
-    // nie powinno przechodzic
-   /* @Test
+    @Test
+    @TestSecurity(user = "admin@test.pl", roles = "ADMIN")
     public void testCreateTaskFail() {
         Task badTask = new Task();
 
@@ -39,11 +45,17 @@ public class TaskControllerTest {
                 .when().post("/tasks")
                 .then()
                 .statusCode(400);
-    }*/
+    }
     @Test
+    @TestSecurity(user = "admin@test.pl", roles = "ADMIN")
     public void testCreateAndUpdateTask() {
         Task newTask = new Task();
-
+        newTask.taskName = "Test";
+        newTask.creationDateTime = LocalDateTime.now();
+        newTask.description = "TestDescription";
+        Project p = new Project();
+        p.id = 1L;
+        newTask.project = p;
         given()
                 .contentType("application/json")
                 .body(newTask)
@@ -53,6 +65,8 @@ public class TaskControllerTest {
 
         int testTaskId = 1;
         Task testTask = new Task();
+        testTask.taskName = "Updated Test";
+        testTask.description = "Updated description";
 
         given()
                 .contentType("application/json")
@@ -63,6 +77,7 @@ public class TaskControllerTest {
                 .statusCode(200);
     }
     @Test
+    @TestSecurity(user = "admin@test.pl", roles = "ADMIN")
     public void testUpdateTaskFail() {
         int badTaskId = 5;
         Task badTask = new Task();
@@ -72,9 +87,10 @@ public class TaskControllerTest {
                 .body(badTask)
                 .when().put("/tasks/{id}")
                 .then()
-                .statusCode(404);
+                .statusCode(400);
     }
     @Test
+    @TestSecurity(user = "admin@test.pl", roles = "ADMIN")
     public void testGetAllTasks() {
         given()
                 .when().get("/tasks")
@@ -84,6 +100,7 @@ public class TaskControllerTest {
     }
 
     @Test
+    @TestSecurity(user = "admin@test.pl", roles = "ADMIN")
     public void testGetTaskById() {
         int testTaskId = 1;
 
@@ -96,9 +113,9 @@ public class TaskControllerTest {
     }
 
     @Test
+    @TestSecurity(user = "admin@test.pl", roles = "ADMIN")
     public void testGetTaskByIdNotFound() {
         long testTaskId = 999;
-        // tu powinno byc 404
         given()
                 .pathParam("id", testTaskId)
                 .when().get("/tasks/{id}")

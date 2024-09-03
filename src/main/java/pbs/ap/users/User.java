@@ -46,9 +46,8 @@ public class User extends PanacheEntityBase {
     @JoinColumn(name = "id"))
     @Enumerated(EnumType.STRING)
     public Set<Roles> roles;
-
-    String password;
     @JsonProperty("password")
+    String password;
     public void setPassword(String password) {
         this.password = password;
     }

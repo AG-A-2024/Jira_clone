@@ -41,7 +41,7 @@ public class UserServiceImpl implements UserService {
     public boolean createUser(User user) {
         LOG.debug(">>>createUser<<<");
         String encryptedPassword = BcryptUtil.bcryptHash(user.password);
-        user.setPassword(encryptedPassword);
+        user.password = encryptedPassword;
         user.persistAndFlush();
 
         return user.isPersistent();

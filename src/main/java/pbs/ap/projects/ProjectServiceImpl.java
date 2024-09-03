@@ -54,6 +54,7 @@ public class ProjectServiceImpl implements ProjectService{
             return null;
         }
         Project dbProject = entity.get();
+
         dbProject.projectName = project.projectName;
         dbProject.projectDescription = project.projectDescription;
         dbProject.taskList = project.taskList;

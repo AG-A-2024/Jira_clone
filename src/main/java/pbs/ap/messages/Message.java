@@ -7,11 +7,11 @@ import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import pbs.ap.users.User;
-
 import java.time.LocalDateTime;
 
 @Entity
 @NoArgsConstructor
+//@JsonIgnoreProperties(ignoreUnknown = true)
 public class Message extends PanacheEntityBase {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,6 +27,7 @@ public class Message extends PanacheEntityBase {
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
     public LocalDateTime creationTime;
+
 
     @JsonProperty("senderId")
     public Long getSenderId() {

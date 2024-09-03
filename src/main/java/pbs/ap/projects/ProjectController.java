@@ -10,6 +10,10 @@ import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 import jakarta.ws.rs.QueryParam;
+import org.springframework.web.bind.annotation.RequestBody;
+import pbs.ap.users.User;
+import pbs.ap.users.UserService;
+
 import java.util.Optional;
 
 
@@ -21,6 +25,7 @@ import java.util.Optional;
 public class ProjectController {
 
     private final ProjectService projectService;
+    private final UserService userService;
     private final SecurityIdentity securityIdentity;
 
     @GET
@@ -80,16 +85,25 @@ public class ProjectController {
     @POST
     @Operation(operationId = "addProject",
                description = "Returns an added project or an error if project can't be persisted")
-    public Response addProject(@QueryParam("name") String name, @QueryParam("description") String description){
-        Project project = new Project(name, description);
-        boolean isAdded = projectService.addProject(project);
+    public Response addProject(@QueryParam("ownerId") Long ownerId, @RequestBody Project project){
+        try{
+            Optional<User> owner = userService.getUserById(ownerId);
+            if(owner.isPresent()){
+                project.projectOwner = owner.get();
+                projectService.addProject(project);
+            }
+            return Response.status(Response.Status.CREATED).build();
+        } catch (Exception e){
+            return Response.status(Response.Status.BAD_REQUEST).build();
+        }
+       /* boolean isAdded = projectService.addProject(project);
         Response response;
         if (isAdded) {
-            response = Response.status(Response.Status.CREATED).entity(String.format("Project %s has been added", name)).build();
+            response = Response.status(Response.Status.CREATED).entity(String.format("Project %s has been added", project.projectName)).build();
         } else {
             response = Response.status(Response.Status.BAD_REQUEST).entity("Project couldn't be created; check parameters").build();
         }
-        return response;
+        return response;*/
     }
 
     @DELETE
@@ -111,7 +125,7 @@ public class ProjectController {
     @Operation(operationId = "updateProjectById",
             description = "Returns the result of a project update; project is provided by its id")
     @Path("/{id}")
-    public Response updateProjectById(@PathParam("id") Long id, Project project){
+    public Response updateProjectById(@PathParam("id") Long id, @RequestBody Project project){
         Project dbProject = projectService.updateProjectById(id, project);
         if (dbProject == null) {
             throw new NotFoundException();

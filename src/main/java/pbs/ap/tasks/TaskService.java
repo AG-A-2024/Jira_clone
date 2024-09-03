@@ -1,8 +1,6 @@
 package pbs.ap.tasks;
 
 
-import io.smallrye.mutiny.Uni;
-
 import java.util.List;
 
 public interface TaskService {
@@ -15,7 +13,7 @@ public interface TaskService {
 
     boolean addTask(Task task);
 
-    Task update(Task task);
+    boolean update(Long id, Task task);
 
     Task deleteTaskById(Long id);
 }

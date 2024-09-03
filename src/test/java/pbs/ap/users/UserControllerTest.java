@@ -1,6 +1,7 @@
 package pbs.ap.users;
 
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.security.TestSecurity;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
@@ -14,6 +15,7 @@ import static org.hamcrest.core.AnyOf.anyOf;
 public class UserControllerTest {
 
     @Test
+    @TestSecurity(user = "admin@test.pl", roles = "ADMIN")
     public void testCreateUserSuccess() {
         User newUser = new User();
         newUser.email = "jan@test";
@@ -23,33 +25,35 @@ public class UserControllerTest {
         given()
                 .contentType("application/json")
                 .body(newUser)
-                .when().post("/user")
+                .when().post("/users")
                 .then()
                 .statusCode(201);
     }
 
     @Test
+    @TestSecurity(user = "admin@test.pl", roles = "ADMIN")
     public void testCreateUserFail() {
         User badUser = new User();
 
         given()
                 .contentType("application/json")
                 .body(badUser)
-                .when().post("/user")
+                .when().post("/users")
                 .then()
                 .statusCode(400);
     }
     @Test
+    @TestSecurity(user = "admin@test.pl", roles = "ADMIN")
     public void testCreateAndUpdateUser() {
         User newUser = new User();
-        newUser.email = "jan@test";
+        newUser.email = "jan@test2";
         newUser.name = "Jan";
         newUser.lastName = "Malinowski";
         newUser.setPassword("123");
         given()
                 .contentType("application/json")
                 .body(newUser)
-                .when().post("/user")
+                .when().post("/users")
                 .then()
                 .statusCode(201);
 
@@ -62,50 +66,54 @@ public class UserControllerTest {
                 .contentType("application/json")
                 .pathParam("id", testUserId)
                 .body(testUser)
-                .when().put("/user/{id}")
+                .when().put("/users/{id}")
                 .then()
                 .statusCode(200);
     }
     @Test
+    @TestSecurity(user = "admin@test.pl", roles = "ADMIN")
     public void testUpdateUserFail() {
-        int badUserId = 5;
+        int badUserId = 9999;
         User badUser = new User();
         given()
                 .contentType("application/json")
                 .pathParam("id", badUserId)
                 .body(badUser)
-                .when().put("/user/{id}")
+                .when().put("/users/{id}")
                 .then()
                 .statusCode(400);
     }
     @Test
+    @TestSecurity(user = "admin@test.pl", roles = "ADMIN")
     public void testGetAllUsers() {
         given()
-                .when().get("/user/all")
+                .when().get("/users/all")
                 .then()
                 .statusCode(anyOf(is(200), is(404)))
                 .contentType(anyOf(is("application/json"), Matchers.is("")));
     }
 
     @Test
+    @TestSecurity(user = "admin@test.pl", roles = "ADMIN")
     public void testGetUserById() {
         int testUserId = 1;
 
         given()
                 .pathParam("id", testUserId)
-                .when().get("/user/{id}")
+                .when().get("/users/{id}")
                 .then()
                 .statusCode(200)
                 .body("id", is(testUserId));
     }
 
     @Test
+    @TestSecurity(user = "admin@test.pl", roles = "ADMIN")
     public void testGetUserByIdNotFound() {
         long testUserId = 999;
 
         given()
                 .pathParam("id", testUserId)
-                .when().get("/user/{id}")
+                .when().get("/users/{id}")
                 .then()
                 .statusCode(404);
     }

@@ -45,7 +45,7 @@ public class Task extends PanacheEntityBase {
     }
 
     private Long getNextTaskNumberForProject(Long projectId) {
-        Optional<Task> maxTaskNumber = Task.find("project.id = ?1", Sort.descending(sequenceNr.toString()), projectId).firstResultOptional();
+        Optional<Task> maxTaskNumber = Task.find("project.id = ?1", Sort.by("sequenceNr").descending(), projectId).firstResultOptional();
         return maxTaskNumber.map(task -> task.sequenceNr + 1).orElse(1L);
     }
 }

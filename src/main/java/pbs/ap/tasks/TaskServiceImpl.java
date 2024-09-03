@@ -7,6 +7,7 @@ import jakarta.transaction.Transactional;
 import jakarta.ws.rs.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.jboss.logging.Logger;
+import pbs.ap.users.User;
 
 
 import java.util.List;
@@ -56,8 +57,8 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     @Transactional
-    public Task update(Task task) {
-        Optional<Task> existingTaskOpt = Task.findByIdOptional(task.id);
+    public boolean update(Long id, Task task) {
+   /*     Optional<Task> existingTaskOpt = Task.findByIdOptional(task.id);
         if (existingTaskOpt.isEmpty()) {
             throw new NotFoundException("Task with id " + task.id + " not found");
         }
@@ -65,7 +66,19 @@ public class TaskServiceImpl implements TaskService {
         existingTask.taskName = task.taskName;
         existingTask.description = task.description;
 
-        return existingTask;
+        return existingTask;*/
+        Optional<Task> existingTaskOpt = Task.findByIdOptional(id);
+        if (existingTaskOpt.isPresent()) {
+            try {
+                Task existingTask = existingTaskOpt.get();
+                existingTask.taskName = task.taskName;
+                existingTask.description = task.description;
+                return addTask(existingTask);
+            } catch (Exception e) {
+                LOG.error(">>>updateTask<<< ERROR: ", e);
+            }
+        }
+        return false;
     }
 
     @Override

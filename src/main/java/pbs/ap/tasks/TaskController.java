@@ -47,26 +47,38 @@ public class TaskController {
     }
 
     @POST
-    public Response addTask(Task task) {
-        boolean isTaskAdded = taskService.addTask(task);
+    public Response addTask(@RequestBody Task task) {
+     /*   boolean isTaskAdded = taskService.addTask(task);
         if (isTaskAdded) {
             return Response.status(Response.Status.CREATED).entity(task).build();
         }
         return Response.status(Response.Status.BAD_REQUEST)
                 .entity("Task couldn't be created. Task content: " + task)
-                .build();
+                .build();*/
+        try{
+            taskService.addTask(task);
+            return Response.status(Response.Status.CREATED).entity(task).build();
+        } catch (Exception e) {
+            System.out.println("ERROR: "+ e);
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("Task couldn't be created. Task content: " + task)
+                    .build();
+        }
     }
 
     @PUT
     @Path("/{id}")
     @Operation(operationId = "updateTask",
             description = "updates an existing task")
-    public Response updateTask(@PathParam("id") Long id, Task task) {
-        if (task == null) {
+    public Response updateTask(@PathParam("id") Long id, @RequestBody Task task) {
+  /*      if (task == null) {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
         Task updatedTask = taskService.update(task);
-        return Response.status(Response.Status.OK).entity(updatedTask).build();
+        return Response.status(Response.Status.OK).entity(updatedTask).build();*/
+        return taskService.update(id, task) ?
+                Response.status(Response.Status.OK).build() :
+                Response.status(Response.Status.BAD_REQUEST).build();
     }
 
 
