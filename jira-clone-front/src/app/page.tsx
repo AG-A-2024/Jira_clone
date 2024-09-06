@@ -1,4 +1,4 @@
-import Link from "next/link"
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -6,7 +6,9 @@ export default function Home() {
       <header className="flex items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
         <Link className="flex items-center" href="#">
           <FlagIcon className="h-6 w-6 text-gray-900 dark:text-gray-50" />
-          <span className="ml-2 text-lg font-bold text-gray-900 dark:text-gray-50">Project Manager</span>
+          <span className="ml-2 text-lg font-bold text-gray-900 dark:text-gray-50">
+            Project Manager
+          </span>
         </Link>
         <div className="flex items-center space-x-4">
           <Link
@@ -32,8 +34,8 @@ export default function Home() {
                   Streamline Your Project Management
                 </h1>
                 <p className="text-lg text-gray-500 dark:text-gray-400">
-                  Our powerful project management app helps you stay organized, collaborate with your team, and deliver
-                  projects on time.
+                  Our powerful project management app helps you stay organized,
+                  collaborate with your team, and deliver projects on time.
                 </p>
                 <div>
                   <Link
@@ -65,21 +67,29 @@ export default function Home() {
             <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
               <div className="space-y-4">
                 <CalendarIcon className="h-10 w-10 text-gray-900 dark:text-gray-50" />
-                <h3 className="text-xl font-bold text-gray-900 dark:text-gray-50">Project Scheduling</h3>
+                <h3 className="text-xl font-bold text-gray-900 dark:text-gray-50">
+                  Project Scheduling
+                </h3>
                 <p className="text-gray-500 dark:text-gray-400">
-                  Easily create and manage project schedules, set deadlines, and track progress.
+                  Easily create and manage project schedules, set deadlines, and
+                  track progress.
                 </p>
               </div>
               <div className="space-y-4">
                 <UsersIcon className="h-10 w-10 text-gray-900 dark:text-gray-50" />
-                <h3 className="text-xl font-bold text-gray-900 dark:text-gray-50">Team Collaboration</h3>
+                <h3 className="text-xl font-bold text-gray-900 dark:text-gray-50">
+                  Team Collaboration
+                </h3>
                 <p className="text-gray-500 dark:text-gray-400">
-                  Invite team members, assign tasks, and communicate in real-time.
+                  Invite team members, assign tasks, and communicate in
+                  real-time.
                 </p>
               </div>
               <div className="space-y-4">
                 <ClipboardIcon className="h-10 w-10 text-gray-900 dark:text-gray-50" />
-                <h3 className="text-xl font-bold text-gray-900 dark:text-gray-50">Task Management</h3>
+                <h3 className="text-xl font-bold text-gray-900 dark:text-gray-50">
+                  Task Management
+                </h3>
                 <p className="text-gray-500 dark:text-gray-400">
                   Create and assign tasks, set priorities, and track progress.
                 </p>
@@ -109,7 +119,8 @@ export default function Home() {
                   Powerful Reporting
                 </h2>
                 <p className="text-lg text-gray-500 dark:text-gray-400">
-                  Get detailed insights into your projects with our advanced reporting features.
+                  Get detailed insights into your projects with our advanced
+                  reporting features.
                 </p>
                 <div>
                   <Link
@@ -125,10 +136,12 @@ export default function Home() {
         </section>
       </main>
       <footer className="bg-gray-900 py-6 text-center text-sm text-gray-400">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">© 2024 Project Manager. All rights reserved.</div>
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          © 2024 Project Manager. All rights reserved.
+        </div>
       </footer>
     </>
-  )
+  );
 }
 
 function BarChartIcon(props: any) {
@@ -149,9 +162,8 @@ function BarChartIcon(props: any) {
       <line x1="18" x2="18" y1="20" y2="4" />
       <line x1="6" x2="6" y1="20" y2="16" />
     </svg>
-  )
+  );
 }
-
 
 function CalendarIcon(props: any) {
   return (
@@ -172,9 +184,8 @@ function CalendarIcon(props: any) {
       <rect width="18" height="18" x="3" y="4" rx="2" />
       <path d="M3 10h18" />
     </svg>
-  )
+  );
 }
-
 
 function ClipboardIcon(props: any) {
   return (
@@ -193,9 +204,8 @@ function ClipboardIcon(props: any) {
       <rect width="8" height="4" x="8" y="2" rx="1" ry="1" />
       <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
     </svg>
-  )
+  );
 }
-
 
 function FlagIcon(props: any) {
   return (
@@ -214,9 +224,8 @@ function FlagIcon(props: any) {
       <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" />
       <line x1="4" x2="4" y1="22" y2="15" />
     </svg>
-  )
+  );
 }
-
 
 function UsersIcon(props: any) {
   return (
@@ -237,5 +246,5 @@ function UsersIcon(props: any) {
       <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
       <path d="M16 3.13a4 4 0 0 1 0 7.75" />
     </svg>
-  )
+  );
 }
